@@ -243,6 +243,7 @@
     </main>
 
     <script>
+        // دوال مساعدة عامة للواجهة (تعمل خارج بيئة الموديول)
         function copySurveyLink(btn) {
             const copyText = document.getElementById("surveyLinkInput");
             copyText.select();
@@ -278,7 +279,12 @@
         };
     </script>
 
+    <!-- بيئة جلب البيانات وبناء الرسوم البيانية -->
     <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
         let rawSurveyData = [];
         let currentSurveyStats = null;
         window.charts = { gender: null, education: null, age: null, axes: null };
@@ -287,13 +293,21 @@
         Chart.defaults.color = isDarkInit ? '#94a3b8' : '#64748b';
         Chart.defaults.scale.grid.color = isDarkInit ? '#334155' : '#f1f5f9';
 
-        // دالة التحميل الفوري والمباشر
-        function loadDemoModeImmediately() {
+        // الدالة التي تقوم بتشغيل العرض التجريبي وإخفاء التحميل فوراً
+        function showOfflineMode() {
             const loader = document.getElementById('loader');
-            loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 300); // 300 ملي ثانية فقط للاختفاء الناعم
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 300);
+            }
             
-            // توليد بيانات وهمية للعرض مباشرة
+            const statusBadge = document.getElementById('connectionStatus');
+            if(statusBadge) {
+                statusBadge.className = "flex items-center gap-2 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700";
+                statusBadge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> وضع العرض التجريبي`;
+            }
+            
+            // توليد بيانات وهمية للعرض
             const mockData = Array.from({length: 12}).map((_, i) => ({
                 gender: Math.random() > 0.4 ? 'ذكر' : 'أنثى',
                 nationality: Math.random() > 0.3 ? 'إماراتي' : 'غير إماراتي',
@@ -305,8 +319,63 @@
             processAndRenderData(mockData);
         }
 
-        // تشغيل وضع العرض التجريبي فوراً عند تحميل الصفحة!
-        document.addEventListener('DOMContentLoaded', loadDemoModeImmediately);
+        // محاولة الاتصال ببيانات النظام (إذا فشلت، تظهر النسخة التجريبية مباشرة)
+        try {
+            let firebaseConfig = {};
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                firebaseConfig = JSON.parse(__firebase_config);
+            }
+            
+            // إذا لم يكن هناك قاعدة بيانات مربوطة (كما هو الحال في موقع GitHub)
+            if (Object.keys(firebaseConfig).length === 0) {
+                showOfflineMode();
+            } else {
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const collectionPath = `artifacts/${appId}/public/data/survey_responses`;
+
+                const initAuth = async () => {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                };
+
+                initAuth();
+
+                onAuthStateChanged(auth, user => {
+                    if (user) {
+                        onSnapshot(collection(db, collectionPath), (snapshot) => {
+                            rawSurveyData = [];
+                            snapshot.forEach(doc => rawSurveyData.push({ id: doc.id, ...doc.data() }));
+                            
+                            const loader = document.getElementById('loader');
+                            if(loader) {
+                                loader.style.opacity = '0';
+                                setTimeout(() => loader.style.display = 'none', 500);
+                            }
+                            
+                            const statusBadge = document.getElementById('connectionStatus');
+                            if(statusBadge) {
+                                statusBadge.className = "flex items-center gap-2 text-xs font-bold bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-4 py-2.5 rounded-full border border-green-100 dark:border-green-800/50";
+                                statusBadge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span> متصل بقاعدة البيانات`;
+                            }
+                            
+                            processAndRenderData(rawSurveyData);
+                        }, (error) => {
+                            console.error("Firestore error: ", error);
+                            showOfflineMode();
+                        });
+                    }
+                });
+            }
+        } catch(e) {
+            console.warn("استخدام وضع عدم الاتصال:", e.message);
+            showOfflineMode();
+        }
 
         function processAndRenderData(data) {
             const total = data.length;
