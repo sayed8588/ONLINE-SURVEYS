@@ -4,105 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استبيان: دور تقنيات الذكاء الاصطناعي في الوقاية من الجريمة</title>
-    <!-- إعداد Tailwind للوضع الداكن -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Tajawal', 'sans-serif'] }
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Tajawal', 'sans-serif'] } } } }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        /* تصميم أزرار الاختيار (Pill Style) */
+        body { transition: background-color 0.3s, color 0.3s; }
         .radio-custom:checked + div {
-            background-color: #1e3a8a; /* أزرق داكن */
-            border-color: #1e3a8a !important;
-            color: white !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transform: scale(1.02);
+            background-color: #1e3a8a; border-color: #1e3a8a !important; color: white !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transform: scale(1.02);
         }
-        .dark .radio-custom:checked + div {
-            background-color: #3b82f6; /* أزرق أفتح في الوضع الداكن */
-            border-color: #3b82f6 !important;
-        }
-        
-        .radio-custom:focus-visible + div {
-            outline: 2px solid #f59e0b;
-            outline-offset: 2px;
-        }
-
-        /* تحسين مظهر شريط التمرير */
+        .dark .radio-custom:checked + div { background-color: #3b82f6; border-color: #3b82f6 !important; }
+        .radio-custom:focus-visible + div { outline: 2px solid #f59e0b; outline-offset: 2px; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* تأثير الخطأ */
-        .question-error {
-            border-color: #ef4444 !important;
-            background-color: #fef2f2 !important;
-            border-radius: 1.5rem !important;
-            padding: 0.5rem;
-            animation: shake 0.4s;
-        }
+        .question-error { border-color: #ef4444 !important; background-color: #fef2f2 !important; border-radius: 1.5rem !important; padding: 0.5rem; animation: shake 0.4s; }
         .dark .question-error { background-color: rgba(239, 68, 68, 0.1) !important; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } }
-
-        /* وضع التركيز (Focus Mode) */
-        .focus-mode-active .form-group {
-            opacity: 0.4;
-            transform: scale(0.98);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .focus-mode-active .form-group.focused-group {
-            opacity: 1;
-            transform: scale(1.02);
-            z-index: 10;
-            position: relative;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Tooltip */
-        .tooltip-text {
-            visibility: hidden; opacity: 0; transition: opacity 0.3s;
-        }
-        .has-tooltip:hover .tooltip-text {
-            visibility: visible; opacity: 1;
+        .focus-mode-active .form-group { opacity: 0.4; transform: scale(0.98); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .focus-mode-active .form-group.focused-group { opacity: 1; transform: scale(1.02); z-index: 10; position: relative; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+        .tooltip-text { visibility: hidden; opacity: 0; transition: opacity 0.3s; }
+        .has-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+        @media print {
+            body { background: white !important; color: black !important; }
+            .printable-hide, header, #progressBar, #stepIndicatorContainer { display: none !important; }
+            .bg-white, .dark\:bg-slate-800 { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; }
+            .focus-mode-active .form-group { opacity: 1 !important; transform: none !important; }
         }
     </style>
 </head>
 <body class="min-h-screen pb-16 bg-[#f0f4f8] text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-    <!-- شريط التقدم العلوي الدائم -->
     <div class="fixed top-0 left-0 right-0 z-50 h-2 bg-slate-200 dark:bg-slate-700 shadow-sm">
         <div id="progressBar" class="bg-amber-500 h-full transition-all duration-500 w-0"></div>
     </div>
 
-    <!-- الترويسة الرئيسية -->
     <header class="max-w-5xl mx-auto px-4 mt-8 md:mt-12 mb-8">
         <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border-r-[12px] border-amber-400 p-6 md:p-8 flex flex-col md:flex-row justify-between items-start relative transition-colors duration-300">
-            
-            <!-- زر الوضع الداكن (Dark Mode Toggle) -->
             <button id="themeToggle" class="absolute top-6 left-6 p-2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
                 <svg id="moonIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 <svg id="sunIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
             </button>
 
             <div class="flex-1 w-full pr-0 md:pl-16">
-                <!-- شعار الجامعة واسم الاستبيان -->
                 <div class="flex items-center gap-4 mb-4">
                     <div class="w-16 h-16 bg-slate-50 dark:bg-slate-700 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center p-2 shrink-0">
-                        <img src="https://www.sharjah.ac.ae/en/Media/PublishingImages/Uos-logo.png" alt="University of Sharjah Logo" class="max-w-full h-auto object-contain" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjOTRhM2I4Ij48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiIgZD0iTTEyIDE0bTktNW0wIDBMMTIgNE0zIDlMMTIgNG0wIDBMMyAxNG05LTUgMCAxMm0wIDBWMTRtMCAwbTktNXYxMCIvPjwvc3ZnPg==';">
+                        <img src="https://www.sharjah.ac.ae/en/Media/PublishingImages/Uos-logo.png" alt="University of Sharjah Logo" class="max-w-full h-auto object-contain">
                     </div>
                     <div>
                         <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 dark:text-white leading-tight">
@@ -130,8 +81,6 @@
     </header>
 
     <div class="max-w-5xl mx-auto px-4">
-        
-        <!-- رسالة النجاح والطباعة (مخفية افتراضياً) -->
         <div id="successMessage" class="hidden bg-white dark:bg-slate-800 rounded-3xl shadow-sm border-t-8 border-green-500 p-10 text-center mb-8 transition-colors">
             <div class="w-20 h-20 bg-green-50 dark:bg-green-900/30 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-green-100 dark:border-green-800">
                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -145,17 +94,13 @@
             </button>
         </div>
 
-        <!-- مؤشر مسار الاستبيان -->
         <div id="stepIndicatorContainer" class="flex justify-between items-center mb-6 px-2">
-            <span id="stepIndicatorText" class="text-sm font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 px-4 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
+            <span class="text-sm font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 px-4 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
                 أكمل الأسئلة في الأسفل لاعتماد مشاركتك
             </span>
         </div>
 
-        <!-- نموذج الاستبيان (صفحة واحدة ممتدة) -->
         <form id="surveyForm" class="space-y-6 form-container">
-            
-            <!-- مقدمة الاستبانة -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border-l-4 border-blue-800 dark:border-blue-500 p-6 mb-6 transition-colors">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2">
                     <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
@@ -167,7 +112,6 @@
                 </p>
             </div>
 
-            <!-- البيانات الأولية -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border-t-4 border-amber-500 p-6 md:p-8 transition-colors">
                 <div class="flex items-center gap-3 mb-8 border-b border-slate-100 dark:border-slate-700 pb-4">
                     <svg class="w-6 h-6 text-blue-800 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -175,8 +119,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    
-                    <!-- الجنس -->
                     <div class="form-group transition-all duration-300 p-2 rounded-2xl" data-group="gender">
                         <label class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                             <span>الجنس <span class="text-red-500">*</span></span>
@@ -194,7 +136,6 @@
                         </div>
                     </div>
 
-                    <!-- الجنسية -->
                     <div class="form-group transition-all duration-300 p-2 rounded-2xl" data-group="nationality">
                         <label class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                             <span>الجنسية <span class="text-red-500">*</span></span>
@@ -212,7 +153,6 @@
                         </div>
                     </div>
 
-                    <!-- الفئة العمرية -->
                     <div class="form-group transition-all duration-300 p-2 rounded-2xl" data-group="age">
                         <label class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                             <span>الفئة العمرية <span class="text-red-500">*</span></span>
@@ -228,7 +168,6 @@
                         </select>
                     </div>
 
-                    <!-- مدة الإقامة -->
                     <div class="form-group transition-all duration-300 p-2 rounded-2xl" data-group="residency">
                         <label class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                             <span>مدة الإقامة في إمارة أبوظبي <span class="text-red-500">*</span></span>
@@ -243,7 +182,6 @@
                         </select>
                     </div>
 
-                    <!-- المستوى التعليمي -->
                     <div class="form-group transition-all duration-300 p-2 rounded-2xl" data-group="education">
                         <label class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                             <span>المستوى التعليمي <span class="text-red-500">*</span></span>
@@ -259,7 +197,6 @@
                         </select>
                     </div>
 
-                    <!-- المعرفة بـ AI -->
                     <div class="form-group transition-all duration-300 p-2 rounded-2xl" data-group="ai_knowledge">
                         <label class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                             <span>المعرفة بتقنيات 
@@ -289,7 +226,6 @@
                         </div>
                     </div>
 
-                    <!-- مستوى التعامل -->
                     <div class="md:col-span-2 form-group transition-all duration-300 p-2 rounded-2xl" data-group="security_interaction">
                         <label class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
                             <span>مستوى التعامل مع الخدمات الأمنية الذكية <span class="text-red-500">*</span></span>
@@ -313,30 +249,25 @@
                 </div>
             </div>
 
-            <!-- حاوية الأسئلة (سيتم توليدها برمجياً هنا في نفس الصفحة) -->
             <div id="dynamic-questions-container" class="space-y-6"></div>
 
-            <!-- زر الإرسال -->
             <div class="flex justify-center mt-12 mb-8 printable-hide">
                 <button type="submit" id="submitBtn" class="px-12 py-4 bg-amber-500 hover:bg-amber-600 text-white text-lg font-bold rounded-full transition duration-300 shadow-xl hover:shadow-2xl flex items-center gap-3 w-full md:w-auto justify-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     <span>إرسال الاستبانة واعتماد الإجابات</span>
                 </button>
             </div>
-
         </form>
     </div>
 
-    <!-- كود الجافاسكريبت للواجهة (يعمل دائماً وفي جميع المتصفحات المحلية) -->
     <script>
-        // بيانات الاستبيان الكاملة (35 سؤال)
         const surveyData = [
             {
                 partTitle: "ثانياً: دور الذكاء الاصطناعي",
                 partDesc: "يقصد بتقنيات الذكاء الاصطناعي مجموعة الأنظمة التي تعتمد على الخوارزميات وتحليل البيانات بهدف دعم العمل الأمني.",
                 axes: [
                     {
-                        title: "المحور الأول: <span class='has-tooltip relative cursor-help border-b border-dashed border-amber-500'>الكاميرات الذكية<span class='tooltip-text absolute bottom-full right-0 mb-2 w-48 bg-slate-800 text-white text-xs font-normal text-center p-2 rounded-lg z-50'>أنظمة مدعومة بالذكاء الاصطناعي لتحليل الصور آلياً</span></span>",
+                        title: "المحور الأول: الكاميرات الذكية",
                         desc: "أنظمة المراقبة المدعومة بالذكاء الاصطناعي لتحليل الصور آلياً ورصد السلوكيات المشتبه بها.",
                         questions: [
                             "تسهم الكاميرات الذكية في اكتشاف السلوكيات غير الطبيعية في الأماكن العامة.",
@@ -347,7 +278,7 @@
                         ]
                     },
                     {
-                        title: "المحور الثاني: <span class='has-tooltip relative cursor-help border-b border-dashed border-amber-500'>البوابات الذكية<span class='tooltip-text absolute bottom-full right-0 mb-2 w-48 bg-slate-800 text-white text-xs font-normal text-center p-2 rounded-lg z-50'>بوابات تستخدم الهوية الرقمية أو بصمة الوجه للمرور الآلي</span></span>",
+                        title: "المحور الثاني: البوابات الذكية",
                         desc: "الأنظمة الإلكترونية التي تتيح الدخول بشكل آلي باستخدام الهوية الرقمية أو بصمة الوجه.",
                         questions: [
                             "تتيح البوابات الذكية الدخول باستخدام الهوية الرقمية دون الحاجة لإبراز مستندات.",
@@ -369,7 +300,7 @@
                         ]
                     },
                     {
-                        title: "المحور الرابع: <span class='has-tooltip relative cursor-help border-b border-dashed border-amber-500'>الأمن السيبراني<span class='tooltip-text absolute bottom-full right-0 mb-2 w-48 bg-slate-800 text-white text-xs font-normal text-center p-2 rounded-lg z-50'>حماية الأفراد والأنظمة من الجرائم الإلكترونية</span></span>",
+                        title: "المحور الرابع: الأمن السيبراني",
                         desc: "الخدمات الحكومية لحماية الأفراد من الجرائم الإلكترونية وتسهيل الإبلاغ عنها.",
                         questions: [
                             "توفر الجهات الحكومية حملات توعية لتجنب الجرائم الإلكترونية.",
@@ -432,7 +363,6 @@
 
         let globalQuestionNumber = 1;
 
-        // دالة توليد الأسئلة وعرضها جميعاً في صفحة واحدة
         function generateQuestions() {
             const container = document.getElementById('dynamic-questions-container');
             let html = '';
@@ -491,7 +421,6 @@
             container.innerHTML = html;
         }
 
-        // إعداد التفاعل البصري 
         function initInteractiveFeatures() {
             const formContainer = document.querySelector('.form-container');
             const formGroups = document.querySelectorAll('.form-group');
@@ -509,7 +438,6 @@
                         const checkIcon = group.querySelector('.check-icon');
                         if (checkIcon) checkIcon.classList.remove('hidden');
                         
-                        // تمرير تلقائي مريح للسؤال التالي 
                         if(input.type === 'radio') {
                             setTimeout(() => {
                                 let nextGroup = group.nextElementSibling;
@@ -534,7 +462,6 @@
             });
         }
 
-        // تحديث شريط التقدم 
         function updateProgress() {
             const groups = document.querySelectorAll('.form-group');
             let answered = 0;
@@ -550,7 +477,6 @@
             document.getElementById('progressBar').style.width = `${progress}%`;
         }
 
-        // التحقق من كافة الأسئلة قبل الإرسال
         function validateAllQuestions() {
             const groups = document.querySelectorAll('.form-group');
             let isValid = true;
@@ -582,7 +508,6 @@
             return isValid;
         }
 
-        // الحفظ التلقائي كمسودة
         let isFormDirty = false;
         let isFormSubmitted = false;
 
@@ -625,7 +550,6 @@
             }
         });
 
-        // تشغيل دوال الواجهة
         generateQuestions();
         initInteractiveFeatures();
         loadDraft();
@@ -636,24 +560,10 @@
             updateProgress();
         });
 
-        // الوضع الداكن
         const themeToggleBtn = document.getElementById('themeToggle');
         themeToggleBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
         });
-
-        // دالة وهمية سيتم استبدالها ببيانات Firebase الحقيقية إن وجد الاتصال
-        window.processFormSubmission = async function(formElement) {
-            console.warn("إرسال تجريبي (لم يتم تحميل مكتبة Firebase بسبب فتح الملف محلياً).");
-            document.getElementById('progressBar').style.width = `100%`;
-            document.getElementById('progressBar').classList.replace('bg-amber-500', 'bg-green-500');
-            
-            formElement.classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
-            document.getElementById('stepIndicatorContainer').classList.add('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            localStorage.removeItem('surveyDraft');
-        };
 
         document.getElementById('surveyForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -666,7 +576,11 @@
             btn.disabled = true;
 
             try {
-                await window.processFormSubmission(this);
+                if(window.processFormSubmission) {
+                    await window.processFormSubmission(this);
+                } else {
+                    throw new Error("دالة الإرسال غير معرفة");
+                }
             } catch (error) {
                 console.error("Error:", error);
                 alert("حدث خطأ، يرجى المحاولة لاحقاً.");
@@ -677,55 +591,49 @@
         });
     </script>
 
-    <!-- كود قاعدة البيانات (يعمل بشكل صحيح عند الرفع على السيرفر مثل GitHub Pages) -->
+    <!-- Supabase Logic -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const collectionPath = `artifacts/${appId}/public/data/survey_responses`;
+        // ==========================================
+        // تم دمج المفاتيح الخاصة بك هنا بنجاح!
+        // ==========================================
+        const SUPABASE_URL = "https://zehhbvendgnicrlitnvl.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaGhidmVuZGduaWNybGl0bnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzM3ODEsImV4cCI6MjA5MzA0OTc4MX0.GWttbilLY4bqAMP1CZwHdHCBVkbdL1BxE6GZwbMrnAo";
 
-        let currentUser = null;
-
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch(e) {}
-        };
-
-        initAuth();
-        onAuthStateChanged(auth, user => { currentUser = user; });
-
-        // تبديل دالة الإرسال الوهمية بدالة الإرسال الحقيقية لقاعدة البيانات
         window.processFormSubmission = async function(formElement) {
-            if (!currentUser) throw new Error("لا يوجد اتصال بقاعدة البيانات");
+            try {
+                const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const formData = new FormData(formElement);
+                const data = Object.fromEntries(formData);
+                
+                // تحويل الإجابات النصية إلى أرقام لتخزينها في قاعدة البيانات
+                for (let i = 1; i <= 35; i++) {
+                    if (data[`q${i}`]) {
+                        data[`q${i}`] = parseInt(data[`q${i}`]);
+                    }
+                }
+                
+                // إرسال البيانات إلى جدول Supabase
+                const { error } = await supabase.from('survey_responses').insert([data]);
 
-            const formData = new FormData(formElement);
-            const data = Object.fromEntries(formData);
-            
-            await addDoc(collection(db, collectionPath), {
-                ...data,
-                submittedAt: new Date().toISOString(),
-                userId: currentUser.uid
-            });
+                if (error) {
+                    console.error("Supabase Insert Error:", error);
+                    throw new Error("حدث خطأ في الإرسال");
+                }
 
-            document.getElementById('progressBar').style.width = `100%`;
-            document.getElementById('progressBar').classList.replace('bg-amber-500', 'bg-green-500');
-            
-            formElement.classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
-            document.getElementById('stepIndicatorContainer').classList.add('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            localStorage.removeItem('surveyDraft');
+                document.getElementById('progressBar').style.width = `100%`;
+                document.getElementById('progressBar').classList.replace('bg-amber-500', 'bg-green-500');
+                
+                formElement.classList.add('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
+                document.getElementById('stepIndicatorContainer').classList.add('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                localStorage.removeItem('surveyDraft');
+            } catch (err) {
+                console.error("Submission Error:", err);
+                throw err;
+            }
         };
     </script>
 </body>
