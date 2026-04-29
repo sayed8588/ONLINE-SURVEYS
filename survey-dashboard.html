@@ -7,14 +7,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Tajawal', 'sans-serif'] }
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Tajawal', 'sans-serif'] } } } }
     </script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,64 +16,47 @@
     <style>
         body { transition: background-color 0.3s, color 0.3s; background-color: #f0f4f8; }
         .dark body { background-color: #0f172a; }
-        
-        /* Card Hover Effects */
         .stat-card { transition: all 0.3s ease; }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-        
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* Loading overlay */
         #loader {
             position: fixed; inset: 0; z-index: 100;
             display: flex; justify-content: center; flex-direction: column; align-items: center; 
-            transition: opacity 0.5s;
-            backdrop-filter: blur(5px);
+            transition: opacity 0.3s; backdrop-filter: blur(5px);
         }
         .spinner {
             border: 4px solid rgba(245, 158, 11, 0.2); border-top: 4px solid #f59e0b;
             border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* تنسيقات الطباعة والتصدير إلى PDF */
         @media print {
             body, .dark body { background-color: #ffffff !important; color: #000000 !important; }
             .bg-white, .dark\:bg-slate-800 { background-color: #ffffff !important; box-shadow: none !important; border: 1px solid #e2e8f0 !important; break-inside: avoid; }
             .bg-indigo-900, .dark\:bg-indigo-950 { background-color: #f8fafc !important; border: 1px solid #e2e8f0 !important; color: #000 !important; }
             .text-white, .text-indigo-50, .text-indigo-200 { color: #1e293b !important; }
-            
-            /* إخفاء العناصر غير الضرورية في التقرير المطبوع */
             #loader, .printable-hide, button, header button, .spinner, .overflow-y-auto { display: none !important; }
-            
             main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             header { margin-top: 0 !important; margin-bottom: 20px !important; box-shadow: none !important; }
-            
-            /* تحسين عرض الرسوم البيانية */
             canvas { max-width: 100% !important; height: auto !important; }
-            
-            /* فواصل الصفحات (Page Breaks) */
             .page-break-before { page-break-before: always; }
         }
     </style>
 </head>
 <body class="text-slate-800 dark:text-slate-100 min-h-screen">
 
-    <!-- شاشة التحميل الأولية -->
-    <div id="loader" class="bg-white/80 dark:bg-slate-900/80">
+    <!-- شاشة التحميل الأولية (ستختفي فوراً) -->
+    <div id="loader" class="bg-white/90 dark:bg-slate-900/90">
         <div class="spinner mb-4"></div>
-        <p class="text-slate-700 dark:text-slate-300 font-bold text-lg animate-pulse">جاري جلب البيانات الحية...</p>
+        <p class="text-slate-700 dark:text-slate-300 font-bold text-lg animate-pulse">جاري التحميل...</p>
     </div>
 
-    <!-- الترويسة الرئيسية (Header Card) -->
+    <!-- الترويسة الرئيسية -->
     <header class="max-w-[95%] mx-auto px-4 mt-6 md:mt-8 mb-8">
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border-r-[12px] border-amber-400 p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center relative transition-colors duration-300">
-            
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-slate-50 dark:bg-slate-700 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center p-2 shrink-0">
                     <img src="https://www.sharjah.ac.ae/en/Media/PublishingImages/Uos-logo.png" alt="Logo" class="max-w-full h-auto object-contain" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjOTRhM2I4Ij48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiIgZD0iTTEyIDE0bTktNW0wIDBMMTIgNE0zIDlMMTIgNG0wIDBMMyAxNG05LTUgMCAxMm0wIDBWMTRtMCAwbTktNXYxMCIvPjwvc3ZnPg==';">
@@ -95,23 +71,21 @@
             
             <div class="flex flex-wrap items-center gap-3 mt-6 md:mt-0">
                 <!-- حالة الاتصال -->
-                <div class="flex items-center gap-2 text-xs font-bold bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-4 py-2.5 rounded-full border border-green-100 dark:border-green-800/50">
-                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span> متصل بقاعدة البيانات
+                <div id="connectionStatus" class="flex items-center gap-2 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 
+                    وضع العرض التجريبي
                 </div>
                 
-                <!-- طباعة / تصدير PDF -->
                 <button onclick="window.print()" class="printable-hide bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition shadow-md">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     <span>طباعة / PDF</span>
                 </button>
 
-                <!-- تصدير البيانات -->
                 <button id="downloadBtn" class="printable-hide bg-blue-900 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition shadow-md">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     <span>تصدير (CSV)</span>
                 </button>
 
-                <!-- زر الوضع الداكن -->
                 <button id="themeToggle" class="printable-hide p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
                     <svg id="moonIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     <svg id="sunIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -121,10 +95,7 @@
     </header>
 
     <main class="max-w-[95%] mx-auto px-4 space-y-6 pb-12">
-        
-        <!-- البطاقات الإحصائية (KPIs) -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            <!-- بطاقة 1 -->
             <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border-t-[6px] border-blue-500 p-6 stat-card flex items-center justify-between transition-colors">
                 <div>
                     <h3 class="text-4xl font-black text-slate-800 dark:text-white mb-1" id="kpi-total">0</h3>
@@ -135,7 +106,6 @@
                 </div>
             </div>
             
-            <!-- بطاقة 2 -->
             <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border-t-[6px] border-amber-500 p-6 stat-card flex items-center justify-between transition-colors">
                 <div>
                     <h3 class="text-4xl font-black text-slate-800 dark:text-white mb-1" id="kpi-locals">0%</h3>
@@ -146,7 +116,6 @@
                 </div>
             </div>
 
-            <!-- بطاقة 3 -->
             <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border-t-[6px] border-emerald-500 p-6 stat-card flex items-center justify-between transition-colors">
                 <div>
                     <h3 class="text-4xl font-black text-slate-800 dark:text-white mb-1" id="kpi-score">0.0</h3>
@@ -157,7 +126,6 @@
                 </div>
             </div>
 
-            <!-- بطاقة 4 -->
             <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border-t-[6px] border-purple-500 p-6 stat-card flex items-center justify-between transition-colors">
                 <div>
                     <h3 class="text-2xl font-black text-slate-800 dark:text-white mb-1 mt-2 truncate max-w-[150px]" id="kpi-ai">-</h3>
@@ -169,12 +137,8 @@
             </div>
         </div>
 
-        <!-- قسم التحليل الذكي والمشاركة -->
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 page-break-before">
-            
-            <!-- قسم الذكاء الاصطناعي -->
             <div class="bg-indigo-900 dark:bg-indigo-950 rounded-[2rem] shadow-sm p-6 relative overflow-hidden flex flex-col justify-between">
-                <!-- زخرفة خلفية -->
                 <div class="printable-hide absolute top-0 left-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
                 
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
@@ -194,26 +158,7 @@
                 </div>
             </div>
 
-            <!-- قسم المشاركة -->
             <div class="printable-hide bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 p-6 md:p-8 flex flex-col justify-between transition-colors">
-                <div>
-                        <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-2">
-                            <span class="text-2xl">✨</span> محلل البيانات الذكي (Gemini)
-                        </h3>
-                        <p class="text-sm text-indigo-200">احصل على قراءة تحليلية وتوصيات استراتيجية مبنية على أرقام الاستبيان الحية.</p>
-                    </div>
-                    <button id="aiAnalyzeBtn" class="shrink-0 bg-white hover:bg-indigo-50 text-indigo-900 px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 transition shadow-lg">
-                        <span>توليد التقرير</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-                
-                <div id="aiResultContainer" class="relative z-10 hidden bg-indigo-800/50 backdrop-blur border border-indigo-700 rounded-2xl p-5 text-indigo-50 text-sm leading-relaxed space-y-3 flex-1 mt-2 overflow-y-auto max-h-[300px] custom-scrollbar">
-                </div>
-            </div>
-
-            <!-- قسم المشاركة -->
-            <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 p-6 md:p-8 flex flex-col justify-between transition-colors">
                 <div>
                     <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2">
                         <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
@@ -226,7 +171,7 @@
                     <div class="flex-1 w-full space-y-3">
                         <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">رابط الاستبيان</label>
                         <div class="flex items-center gap-2">
-                            <input type="url" id="surveyLinkInput" value="https://example.com" placeholder="ضع الرابط هنا..." class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm rounded-full focus:ring-2 focus:ring-amber-500 focus:border-amber-500 block w-full px-5 py-3 rtl:text-right text-left transition" dir="ltr">
+                            <input type="url" id="surveyLinkInput" value="https://sayed8588.github.io/ONLINE-SURVEYS/" class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm rounded-full focus:ring-2 focus:ring-amber-500 focus:border-amber-500 block w-full px-5 py-3 rtl:text-right text-left transition" dir="ltr">
                             <button onclick="copySurveyLink(this)" class="shrink-0 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 font-bold rounded-full text-sm px-6 py-3 transition flex items-center gap-2">
                                 <span>نسخ</span>
                             </button>
@@ -234,8 +179,8 @@
                     </div>
                     
                     <div class="shrink-0 bg-slate-50 dark:bg-slate-900 p-4 rounded-3xl border border-slate-200 dark:border-slate-700 flex flex-col items-center gap-3">
-                        <img id="qrCodeImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://example.com" alt="QR Code" class="w-24 h-24 rounded-xl bg-white p-1 border border-slate-200">
-                        <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://example.com" download="survey-qr.png" target="_blank" class="text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700 font-bold flex items-center gap-1">
+                        <img id="qrCodeImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sayed8588.github.io/ONLINE-SURVEYS/" alt="QR Code" class="w-24 h-24 rounded-xl bg-white p-1 border border-slate-200">
+                        <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://sayed8588.github.io/ONLINE-SURVEYS/" download="survey-qr.png" target="_blank" class="text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700 font-bold flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                             تنزيل QR
                         </a>
@@ -244,7 +189,6 @@
             </div>
         </div>
 
-        <!-- الرسوم البيانية الديموغرافية -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 page-break-before">
             <div class="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
                 <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-4 text-center">توزيع الجنس</h4>
@@ -260,7 +204,6 @@
             </div>
         </div>
 
-        <!-- رسم المحاور الرئيسي -->
         <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
             <div class="flex items-center gap-3 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
                 <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -271,7 +214,6 @@
             </div>
         </div>
 
-        <!-- جدول أحدث الردود -->
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors page-break-before">
             <div class="p-6 md:p-8 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
                 <div class="flex items-center gap-3">
@@ -293,15 +235,13 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="text-sm text-slate-700 dark:text-slate-300 divide-y divide-slate-100 dark:divide-slate-700/50">
-                        <!-- Dynamic Rows -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
 
     </main>
 
-    <!-- سكربت نسخ الرابط -->
     <script>
         function copySurveyLink(btn) {
             const copyText = document.getElementById("surveyLinkInput");
@@ -325,89 +265,48 @@
                 qrLink.href = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(url)}`;
             }
 
-            // اقتراح رابط مبدئي بناءً على الرابط الحالي
-            let currentUrl = window.location.href;
-            if(currentUrl.includes("survey-dashboard")) {
-                currentUrl = currentUrl.replace("survey-dashboard", "survey-ai-crime-prevention");
-            }
-            linkInput.value = currentUrl;
+            linkInput.addEventListener('input', (e) => updateQRCode(e.target.value));
             
-            updateQRCode(linkInput.value);
-
-            linkInput.addEventListener('input', (e) => {
-                updateQRCode(e.target.value);
-            });
-            
-            // إدارة الوضع الداكن
             const themeToggleBtn = document.getElementById('themeToggle');
             themeToggleBtn.addEventListener('click', () => {
                 document.documentElement.classList.toggle('dark');
-                // تحديث ألوان الشارت عند التبديل
                 const isDark = document.documentElement.classList.contains('dark');
                 Chart.defaults.color = isDark ? '#94a3b8' : '#64748b';
                 Chart.defaults.scale.grid.color = isDark ? '#334155' : '#f1f5f9';
-                for (let id in charts) {
-                    if (charts[id]) charts[id].update();
-                }
+                for (let id in window.charts) { if (window.charts[id]) window.charts[id].update(); }
             });
         };
     </script>
 
-    <!-- Firebase Logic -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const collectionPath = `artifacts/${appId}/public/data/survey_responses`;
-
-        let currentUser = null;
         let rawSurveyData = [];
         let currentSurveyStats = null;
-
-        // إعدادات الشارتات
         window.charts = { gender: null, education: null, age: null, axes: null };
         const isDarkInit = document.documentElement.classList.contains('dark');
         Chart.defaults.font.family = "'Tajawal', sans-serif";
         Chart.defaults.color = isDarkInit ? '#94a3b8' : '#64748b';
         Chart.defaults.scale.grid.color = isDarkInit ? '#334155' : '#f1f5f9';
 
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch(e) {}
-        };
+        // دالة التحميل الفوري والمباشر
+        function loadDemoModeImmediately() {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 300); // 300 ملي ثانية فقط للاختفاء الناعم
+            
+            // توليد بيانات وهمية للعرض مباشرة
+            const mockData = Array.from({length: 12}).map((_, i) => ({
+                gender: Math.random() > 0.4 ? 'ذكر' : 'أنثى',
+                nationality: Math.random() > 0.3 ? 'إماراتي' : 'غير إماراتي',
+                age: ['20-29', '30-39', '40-49'][Math.floor(Math.random()*3)],
+                education: ['بكالوريوس', 'ماجستير', 'دبلوم'][Math.floor(Math.random()*3)],
+                ai_knowledge: ['متوسطة', 'جيدة', 'مرتفعة'][Math.floor(Math.random()*3)],
+                ...Object.fromEntries(Array.from({length: 35}).map((_, j) => [`q${j+1}`, Math.floor(Math.random() * 3) + 3]))
+            }));
+            processAndRenderData(mockData);
+        }
 
-        initAuth();
-
-        onAuthStateChanged(auth, user => {
-            currentUser = user;
-            if (user) {
-                // مراقبة حية للبيانات
-                onSnapshot(collection(db, collectionPath), (snapshot) => {
-                    rawSurveyData = [];
-                    snapshot.forEach(doc => {
-                        rawSurveyData.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    document.getElementById('loader').style.opacity = '0';
-                    setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-                    
-                    processAndRenderData(rawSurveyData);
-                }, (error) => {
-                    console.error("Firestore error: ", error);
-                });
-            }
-        });
+        // تشغيل وضع العرض التجريبي فوراً عند تحميل الصفحة!
+        document.addEventListener('DOMContentLoaded', loadDemoModeImmediately);
 
         function processAndRenderData(data) {
             const total = data.length;
@@ -420,10 +319,7 @@
 
             const counts = {
                 gender: { 'ذكر': 0, 'أنثى': 0 },
-                education: {},
-                age: {},
-                nationality: { 'إماراتي': 0, 'غير إماراتي': 0 },
-                ai_knowledge: {}
+                education: {}, age: {}, nationality: { 'إماراتي': 0, 'غير إماراتي': 0 }, ai_knowledge: {}
             };
             
             let totalAxesSums = [0, 0, 0, 0, 0, 0, 0];
@@ -440,8 +336,7 @@
                 for (let i = 0; i < 7; i++) {
                     let axisSum = 0;
                     for (let j = 0; j < 5; j++) {
-                        let qNum = (i * 5) + j + 1;
-                        let score = parseInt(res[`q${qNum}`]) || 0;
+                        let score = parseInt(res[`q${(i * 5) + j + 1}`]) || 0;
                         axisSum += score;
                         userTotalScore += score;
                     }
@@ -450,29 +345,23 @@
                 
                 let average = (userTotalScore / 35).toFixed(2);
                 grandTotalScore += parseFloat(average);
-                
                 return { ...res, displayId: index + 1, average };
             });
 
-            // تحديث الأرقام
             let localPercent = Math.round((counts.nationality['إماراتي'] / total) * 100) || 0;
             document.getElementById('kpi-locals').innerText = localPercent + '%';
             document.getElementById('kpi-score').innerText = (grandTotalScore / total).toFixed(2);
             
-            // معرفة AI الأغلب
-            let topAi = '-';
-            let maxAiCount = 0;
+            let topAi = '-'; let maxAiCount = 0;
             for (const [key, value] of Object.entries(counts.ai_knowledge)) {
                 if(value > maxAiCount) { maxAiCount = value; topAi = key; }
             }
             document.getElementById('kpi-ai').innerText = topAi;
 
-            // تحديث الجدول
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             processedData.slice(-10).reverse().forEach(row => {
                 let badgeClass = row.nationality === 'إماراتي' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300';
-                
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                         <td class="p-5 font-bold text-slate-400">#${row.displayId}</td>
@@ -487,19 +376,15 @@
             });
 
             let axesAverages = totalAxesSums.map(sum => (sum / total).toFixed(2));
-
             updateChart('gender', 'doughnut', Object.keys(counts.gender), Object.values(counts.gender), ['#3b82f6', '#f59e0b']);
             updateChart('education', 'bar', Object.keys(counts.education), Object.values(counts.education), '#8b5cf6');
             updateChart('age', 'bar', Object.keys(counts.age), Object.values(counts.age), '#10b981');
-            
-            const axesLabels = ['الكاميرات', 'البوابات', 'التطبيقات', 'السيبراني', 'الالتزام', 'المشاركة', 'الوعي'];
-            updateAxesChart(axesLabels, axesAverages);
+            updateAxesChart(['الكاميرات', 'البوابات', 'التطبيقات', 'السيبراني', 'الالتزام', 'المشاركة', 'الوعي'], axesAverages);
 
             currentSurveyStats = {
-                total: total,
-                localsPercentage: localPercent,
+                total: total, localsPercentage: localPercent,
                 overallAverage: (grandTotalScore / total).toFixed(2),
-                axesAverages: axesLabels.map((label, idx) => `${label}: ${axesAverages[idx]}`).join('، ')
+                axesAverages: ['الكاميرات', 'البوابات', 'التطبيقات', 'السيبراني', 'الالتزام', 'المشاركة', 'الوعي'].map((label, idx) => `${label}: ${axesAverages[idx]}`).join('، ')
             };
         }
 
@@ -507,82 +392,46 @@
             if (window.charts[id]) window.charts[id].destroy();
             window.charts[id] = new Chart(document.getElementById(`${id}Chart`), {
                 type: type,
-                data: {
-                    labels: labels,
-                    datasets: [{ data: data, backgroundColor: colors, borderRadius: type==='bar'?8:0, borderWidth: 0 }]
-                },
-                options: { 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: type==='doughnut', position: 'bottom' } },
-                    scales: type === 'bar' ? { x: { grid: { display: false } }, y: { beginAtZero: true } } : {}
-                }
+                data: { labels: labels, datasets: [{ data: data, backgroundColor: colors, borderRadius: type==='bar'?8:0, borderWidth: 0 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: type==='doughnut', position: 'bottom' } }, scales: type === 'bar' ? { x: { grid: { display: false } }, y: { beginAtZero: true } } : {} }
             });
         }
 
         function updateAxesChart(labels, data) {
             if (window.charts.axes) window.charts.axes.destroy();
-            
-            // عمل تدرج لوني جميل للأعمدة
             let ctx = document.getElementById('axesChart').getContext('2d');
             let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, '#3b82f6'); // blue-500
-            gradient.addColorStop(1, '#8b5cf6'); // violet-500
+            gradient.addColorStop(0, '#3b82f6'); gradient.addColorStop(1, '#8b5cf6');
 
             window.charts.axes = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{ 
-                        label: 'متوسط التقييم', 
-                        data: data, 
-                        backgroundColor: gradient, 
-                        borderRadius: 8, 
-                        barPercentage: 0.5 
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    scales: { 
-                        y: { beginAtZero: true, max: 5 },
-                        x: { grid: { display: false } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
+                data: { labels: labels, datasets: [{ label: 'متوسط التقييم', data: data, backgroundColor: gradient, borderRadius: 8, barPercentage: 0.5 }] },
+                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 5 }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
         }
 
-        // تصدير CSV
         document.getElementById('downloadBtn').addEventListener('click', () => {
-            if (rawSurveyData.length === 0) return alert("لا توجد بيانات لتصديرها.");
-            
+            if (rawSurveyData.length === 0) return alert("لا توجد بيانات (أو أنت في الوضع التجريبي).");
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
             let sampleRow = rawSurveyData[0];
             let keys = Object.keys(sampleRow).filter(k => k !== 'id' && k !== 'userId' && k !== 'submittedAt');
-            
             csvContent += keys.join(",") + "\r\n";
             rawSurveyData.forEach(row => {
                 let values = keys.map(k => `"${row[k] || ''}"`);
                 csvContent += values.join(",") + "\r\n";
             });
-
-            const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
+            link.setAttribute("href", encodeURI(csvContent));
             link.setAttribute("download", "survey_data.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         });
 
-        // Gemini AI
         async function fetchGeminiInsights(prompt, retries = 3, delay = 1000) {
             const apiKey = "";
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: "أنت خبير استراتيجي يعمل لجهة أمنية في الإمارات. قدم تحليلاً قصيراً ومباشراً و3 توصيات ذكية جداً بناءً على الأرقام المعطاة. استخدم HTML <ul> و <strong> للترتيب." }] }
-            };
+            const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: "أنت خبير استراتيجي يعمل لجهة أمنية في الإمارات. قدم تحليلاً قصيراً ومباشراً و3 توصيات ذكية جداً بناءً على الأرقام المعطاة. استخدم HTML <ul> و <strong> للترتيب." }] } };
 
             for (let i = 0; i < retries; i++) {
                 try {
@@ -598,29 +447,16 @@
         }
 
         document.getElementById('aiAnalyzeBtn').addEventListener('click', async () => {
-            if (!currentSurveyStats || currentSurveyStats.total === 0) {
-                return alert("لا توجد بيانات كافية للتحليل بعد.");
-            }
-
+            if (!currentSurveyStats || currentSurveyStats.total === 0) return alert("لا توجد بيانات كافية للتحليل بعد.");
             const btn = document.getElementById('aiAnalyzeBtn');
             const resultContainer = document.getElementById('aiResultContainer');
-            
             const originalBtnHtml = btn.innerHTML;
             btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-indigo-900 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
             btn.disabled = true;
-            
             resultContainer.classList.remove('hidden');
             resultContainer.innerHTML = `<div class="flex items-center gap-2 text-indigo-200 animate-pulse">جاري التحليل...</div>`;
 
-            const prompt = `
-                حلل بيانات استبيان "دور الذكاء الاصطناعي في الوقاية من الجريمة في أبوظبي":
-                العدد: ${currentSurveyStats.total}
-                نسبة المواطنين: ${currentSurveyStats.localsPercentage}%
-                المتوسط العام: ${currentSurveyStats.overallAverage}/5
-                المحاور: ${currentSurveyStats.axesAverages}
-                
-                اكتب الرد بصيغة HTML مرتبة بدون علامات ماركدوان.
-            `;
+            const prompt = `حلل بيانات استبيان "دور الذكاء الاصطناعي في الوقاية من الجريمة في أبوظبي": العدد: ${currentSurveyStats.total} نسبة المواطنين: ${currentSurveyStats.localsPercentage}% المتوسط العام: ${currentSurveyStats.overallAverage}/5 المحاور: ${currentSurveyStats.axesAverages} اكتب الرد بصيغة HTML مرتبة بدون علامات ماركدوان.`;
 
             try {
                 const aiResponse = await fetchGeminiInsights(prompt);
