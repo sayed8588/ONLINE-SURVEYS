@@ -48,10 +48,10 @@
 </head>
 <body class="text-slate-800 dark:text-slate-100 min-h-screen">
 
-    <!-- شاشة التحميل الأولية (ستختفي فوراً) -->
+    <!-- شاشة التحميل -->
     <div id="loader" class="bg-white/90 dark:bg-slate-900/90">
         <div class="spinner mb-4"></div>
-        <p class="text-slate-700 dark:text-slate-300 font-bold text-lg animate-pulse">جاري التحميل...</p>
+        <p class="text-slate-700 dark:text-slate-300 font-bold text-lg animate-pulse">جاري الاتصال بقاعدة البيانات...</p>
     </div>
 
     <!-- الترويسة الرئيسية -->
@@ -73,7 +73,7 @@
                 <!-- حالة الاتصال -->
                 <div id="connectionStatus" class="flex items-center gap-2 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 
-                    وضع العرض التجريبي
+                    جاري التحقق...
                 </div>
                 
                 <button onclick="window.print()" class="printable-hide bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition shadow-md">
@@ -95,6 +95,7 @@
     </header>
 
     <main class="max-w-[95%] mx-auto px-4 space-y-6 pb-12">
+        <!-- البطاقات الإحصائية (KPIs) -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border-t-[6px] border-blue-500 p-6 stat-card flex items-center justify-between transition-colors">
                 <div>
@@ -137,6 +138,7 @@
             </div>
         </div>
 
+        <!-- قسم التحليل والمشاركة -->
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 page-break-before">
             <div class="bg-indigo-900 dark:bg-indigo-950 rounded-[2rem] shadow-sm p-6 relative overflow-hidden flex flex-col justify-between">
                 <div class="printable-hide absolute top-0 left-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
@@ -189,6 +191,7 @@
             </div>
         </div>
 
+        <!-- الرسوم البيانية الديموغرافية -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 page-break-before">
             <div class="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
                 <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-4 text-center">توزيع الجنس</h4>
@@ -204,6 +207,7 @@
             </div>
         </div>
 
+        <!-- رسم المحاور الرئيسي -->
         <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
             <div class="flex items-center gap-3 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
                 <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -214,6 +218,7 @@
             </div>
         </div>
 
+        <!-- جدول أحدث الردود -->
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors page-break-before">
             <div class="p-6 md:p-8 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
                 <div class="flex items-center gap-3">
@@ -242,8 +247,8 @@
 
     </main>
 
+    <!-- سكربت واجهة المستخدم العادية -->
     <script>
-        // دوال مساعدة عامة للواجهة (تعمل خارج بيئة الموديول)
         function copySurveyLink(btn) {
             const copyText = document.getElementById("surveyLinkInput");
             copyText.select();
@@ -279,11 +284,15 @@
         };
     </script>
 
-    <!-- بيئة جلب البيانات وبناء الرسوم البيانية -->
+    <!-- Supabase Logic -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // ==========================================
+        // تم دمج المفاتيح الخاصة بك هنا بنجاح!
+        // ==========================================
+        const SUPABASE_URL = "https://zehhbvendgnicrlitnvl.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaGhidmVuZGduaWNybGl0bnZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzM3ODEsImV4cCI6MjA5MzA0OTc4MX0.GWttbilLY4bqAMP1CZwHdHCBVkbdL1BxE6GZwbMrnAo";
 
         let rawSurveyData = [];
         let currentSurveyStats = null;
@@ -293,88 +302,50 @@
         Chart.defaults.color = isDarkInit ? '#94a3b8' : '#64748b';
         Chart.defaults.scale.grid.color = isDarkInit ? '#334155' : '#f1f5f9';
 
-        // الدالة التي تقوم بتشغيل العرض التجريبي وإخفاء التحميل فوراً
-        function showOfflineMode() {
+        async function fetchDataAndSubscribe(supabase) {
+            const { data, error } = await supabase
+                .from('survey_responses')
+                .select('*')
+                .order('created_at', { ascending: true });
+
+            if (error) {
+                console.error("Supabase fetch error:", error);
+                return;
+            }
+
+            rawSurveyData = data || [];
+            
             const loader = document.getElementById('loader');
             if(loader) {
                 loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 300);
+                setTimeout(() => loader.style.display = 'none', 500);
             }
             
             const statusBadge = document.getElementById('connectionStatus');
             if(statusBadge) {
-                statusBadge.className = "flex items-center gap-2 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700";
-                statusBadge.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> وضع العرض التجريبي`;
+                statusBadge.className = "flex items-center gap-2 text-xs font-bold bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-4 py-2.5 rounded-full border border-green-100 dark:border-green-800/50";
+                statusBadge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span> متصل بـ Supabase بنجاح`;
             }
-            
-            // توليد بيانات وهمية للعرض
-            const mockData = Array.from({length: 12}).map((_, i) => ({
-                gender: Math.random() > 0.4 ? 'ذكر' : 'أنثى',
-                nationality: Math.random() > 0.3 ? 'إماراتي' : 'غير إماراتي',
-                age: ['20-29', '30-39', '40-49'][Math.floor(Math.random()*3)],
-                education: ['بكالوريوس', 'ماجستير', 'دبلوم'][Math.floor(Math.random()*3)],
-                ai_knowledge: ['متوسطة', 'جيدة', 'مرتفعة'][Math.floor(Math.random()*3)],
-                ...Object.fromEntries(Array.from({length: 35}).map((_, j) => [`q${j+1}`, Math.floor(Math.random() * 3) + 3]))
-            }));
-            processAndRenderData(mockData);
+
+            processAndRenderData(rawSurveyData);
+
+            supabase
+                .channel('public:survey_responses')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'survey_responses' }, payload => {
+                    rawSurveyData.push(payload.new);
+                    processAndRenderData(rawSurveyData);
+                })
+                .subscribe();
         }
 
-        // محاولة الاتصال ببيانات النظام (إذا فشلت، تظهر النسخة التجريبية مباشرة)
         try {
-            let firebaseConfig = {};
-            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                firebaseConfig = JSON.parse(__firebase_config);
-            }
-            
-            // إذا لم يكن هناك قاعدة بيانات مربوطة (كما هو الحال في موقع GitHub)
-            if (Object.keys(firebaseConfig).length === 0) {
-                showOfflineMode();
-            } else {
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                const db = getFirestore(app);
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const collectionPath = `artifacts/${appId}/public/data/survey_responses`;
-
-                const initAuth = async () => {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                };
-
-                initAuth();
-
-                onAuthStateChanged(auth, user => {
-                    if (user) {
-                        onSnapshot(collection(db, collectionPath), (snapshot) => {
-                            rawSurveyData = [];
-                            snapshot.forEach(doc => rawSurveyData.push({ id: doc.id, ...doc.data() }));
-                            
-                            const loader = document.getElementById('loader');
-                            if(loader) {
-                                loader.style.opacity = '0';
-                                setTimeout(() => loader.style.display = 'none', 500);
-                            }
-                            
-                            const statusBadge = document.getElementById('connectionStatus');
-                            if(statusBadge) {
-                                statusBadge.className = "flex items-center gap-2 text-xs font-bold bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-4 py-2.5 rounded-full border border-green-100 dark:border-green-800/50";
-                                statusBadge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span> متصل بقاعدة البيانات`;
-                            }
-                            
-                            processAndRenderData(rawSurveyData);
-                        }, (error) => {
-                            console.error("Firestore error: ", error);
-                            showOfflineMode();
-                        });
-                    }
-                });
-            }
+            const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            fetchDataAndSubscribe(supabase);
         } catch(e) {
             console.warn("استخدام وضع عدم الاتصال:", e.message);
-            showOfflineMode();
+            // إخفاء التحميل إذا فشل الاتصال كلياً
+            const loader = document.getElementById('loader');
+            if(loader) { loader.style.display = 'none'; }
         }
 
         function processAndRenderData(data) {
@@ -382,7 +353,7 @@
             document.getElementById('kpi-total').innerText = total;
 
             if (total === 0) {
-                document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500">لا توجد ردود حتى الآن. سيتم التحديث تلقائياً فور ورودها.</td></tr>`;
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500">لا توجد ردود حقيقية حتى الآن. شارك الرابط ليقوم الناس بالإجابة!</td></tr>`;
                 return;
             }
 
@@ -480,10 +451,10 @@
         }
 
         document.getElementById('downloadBtn').addEventListener('click', () => {
-            if (rawSurveyData.length === 0) return alert("لا توجد بيانات (أو أنت في الوضع التجريبي).");
+            if (rawSurveyData.length === 0) return alert("لا توجد بيانات لتصديرها.");
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
             let sampleRow = rawSurveyData[0];
-            let keys = Object.keys(sampleRow).filter(k => k !== 'id' && k !== 'userId' && k !== 'submittedAt');
+            let keys = Object.keys(sampleRow).filter(k => k !== 'id' && k !== 'userId' && k !== 'created_at');
             csvContent += keys.join(",") + "\r\n";
             rawSurveyData.forEach(row => {
                 let values = keys.map(k => `"${row[k] || ''}"`);
