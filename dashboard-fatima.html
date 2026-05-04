@@ -53,6 +53,22 @@
             border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .copy-feedback {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .show-feedback { opacity: 1; }
     </style>
 </head>
 <body class="pb-12 px-4 md:px-8">
@@ -97,6 +113,36 @@
 
     <main class="max-w-7xl mx-auto space-y-6">
         
+        <!-- قسم مشاركة الاستبيان و QR Code -->
+        <div class="glass-panel p-6 rounded-3xl mb-6 border-r-[6px] border-accent-500">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <div class="flex-1 space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                        مشاركة الاستبيان ونشر الرابط
+                    </h3>
+                    <p class="text-slate-500 text-sm">استخدم هذا الرابط لإرساله للمشاركين عبر وسائل التواصل الاجتماعي:</p>
+                    
+                    <div class="relative flex items-center gap-2">
+                        <input type="text" id="surveyUrl" readonly value="https://sayed8588.github.io/ONLINE-SURVEYS/survey-fatima.html" 
+                               class="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl text-slate-600 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-500">
+                        <button onclick="copyToClipboard()" class="bg-accent-500 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-accent-600 transition shrink-0 relative">
+                            <span id="copyText">نسخ الرابط</span>
+                            <div id="copyFeedback" class="copy-feedback">تم النسخ!</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="shrink-0 flex flex-col items-center gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-inner">
+                    <div id="qrContainer" class="w-32 h-32 bg-slate-50 rounded-lg flex items-center justify-center overflow-hidden">
+                        <!-- سيتم تحميل QR Code هنا -->
+                        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sayed8588.github.io/ONLINE-SURVEYS/survey-fatima.html" alt="QR Code" class="w-full h-full">
+                    </div>
+                    <a id="downloadQR" href="#" download="survey-qr.png" onclick="downloadQRCode(event)" class="text-xs font-bold text-primary-600 hover:underline">تحميل الرمز (QR)</a>
+                </div>
+            </div>
+        </div>
+
         <!-- ملخص إحصائي سريع -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="glass-panel p-6 rounded-2xl stat-card border-b-4 border-blue-500">
@@ -207,12 +253,15 @@
             let axesSums = [0,0,0,0,0,0,0]; // 7 axes
             let totalAvgScore = 0;
 
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
             data.forEach((row, idx) => {
                 // Demographics
-                counts.gender[row.gender] = (counts.gender[row.gender] || 0) + 1;
-                counts.age[row.age] = (counts.age[row.age] || 0) + 1;
-                counts.education[row.education] = (counts.education[row.education] || 0) + 1;
-                counts.experience[row.experience] = (counts.experience[row.experience] || 0) + 1;
+                if(row.gender) counts.gender[row.gender] = (counts.gender[row.gender] || 0) + 1;
+                if(row.age) counts.age[row.age] = (counts.age[row.age] || 0) + 1;
+                if(row.education) counts.education[row.education] = (counts.education[row.education] || 0) + 1;
+                if(row.experience) counts.experience[row.experience] = (counts.experience[row.experience] || 0) + 1;
 
                 // Axes Calculation (5 questions per axis)
                 let rowSum = 0;
@@ -229,13 +278,13 @@
 
                 // Table
                 if(idx < 10) {
-                    document.getElementById('tableBody').innerHTML += `
+                    tbody.innerHTML += `
                         <tr class="hover:bg-slate-50 transition">
                             <td class="p-4 font-bold text-slate-300">#${total-idx}</td>
-                            <td class="p-4">${row.gender}</td>
-                            <td class="p-4">${row.age}</td>
-                            <td class="p-4">${row.education}</td>
-                            <td class="p-4">${row.experience}</td>
+                            <td class="p-4">${row.gender || '-'}</td>
+                            <td class="p-4">${row.age || '-'}</td>
+                            <td class="p-4">${row.education || '-'}</td>
+                            <td class="p-4">${row.experience || '-'}</td>
                             <td class="p-4 text-center font-bold text-primary-600">${rowAvg}</td>
                         </tr>
                     `;
@@ -244,8 +293,12 @@
 
             // KPIs
             document.getElementById('kpi-score').innerText = (totalAvgScore / total).toFixed(2);
-            document.getElementById('kpi-edu').innerText = Object.keys(counts.education).reduce((a, b) => counts.education[a] > counts.education[b] ? a : b);
-            document.getElementById('kpi-exp').innerText = Object.keys(counts.experience).reduce((a, b) => counts.experience[a] > counts.experience[b] ? a : b);
+            
+            if(Object.keys(counts.education).length > 0)
+                document.getElementById('kpi-edu').innerText = Object.keys(counts.education).reduce((a, b) => counts.education[a] > counts.education[b] ? a : b);
+            
+            if(Object.keys(counts.experience).length > 0)
+                document.getElementById('kpi-exp').innerText = Object.keys(counts.experience).reduce((a, b) => counts.experience[a] > counts.experience[b] ? a : b);
 
             // Charts
             renderPie('genderChart', Object.keys(counts.gender), Object.values(counts.gender), ['#0ea5e9', '#f43f5e']);
@@ -285,9 +338,39 @@
 
         // CSV Download
         document.getElementById('downloadBtn').onclick = () => {
-            alert("سيتم تصدير البيانات بصيغة CSV لبرنامج Excel.");
-            window.location.reload(); // تبسيط للمثال
+            alert("سيتم تجهيز ملف البيانات بصيغة CSV.");
         };
+    </script>
+
+    <!-- UI Helpers -->
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("surveyUrl");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            
+            // استخدام الأمر التقليدي لضمان العمل داخل iFrame
+            document.execCommand('copy');
+            
+            const feedback = document.getElementById("copyFeedback");
+            feedback.classList.add("show-feedback");
+            setTimeout(() => feedback.classList.remove("show-feedback"), 2000);
+        }
+
+        async function downloadQRCode(e) {
+            e.preventDefault();
+            const qrImg = document.getElementById('qrImage');
+            const response = await fetch(qrImg.src);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'survey-qr-code.png';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
     </script>
 </body>
 </html>
