@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان: دور القيادات الشابة في التحول الرقمي</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { 
+            darkMode: 'class', 
+            theme: { 
+                extend: { 
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+                    colors: {
+                        primary: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        accent: { 500: '#8b5cf6', 600: '#7c3aed' }
+                    }
+                } 
+            } 
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            margin: 0; 
+            min-height: 100vh;
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+        .dark body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        /* Animated Particles Background */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f1f5f9 100%);
+        }
+        
+        .dark .bg-particles {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0c4a6e 100%);
+        }
+
+        .particle {
+            position: absolute;
+            display: block;
+            pointer-events: none;
+            border-radius: 50%;
+            background: rgba(14, 165, 233, 0.1);
+            animation: float 20s infinite linear;
+        }
+
+        .dark .particle {
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+        }
+
+        .particle:nth-child(1) { left: 10%; width: 80px; height: 80px; animation-delay: 0s; animation-duration: 25s; }
+        .particle:nth-child(2) { left: 25%; width: 50px; height: 50px; animation-delay: 2s; animation-duration: 28s; }
+        .particle:nth-child(3) { left: 40%; width: 120px; height: 120px; animation-delay: 4s; animation-duration: 35s; }
+        .particle:nth-child(4) { left: 60%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 30s; }
+        .particle:nth-child(5) { left: 75%; width: 90px; height: 90px; animation-delay: 3s; animation-duration: 32s; }
+        .particle:nth-child(6) { left: 90%; width: 150px; height: 150px; animation-delay: 1s; animation-duration: 40s; }
+
+        /* Premium Glass Panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-panel:hover {
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+        }
+        .dark .glass-panel:hover {
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        /* Dropdown Styling */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        select option {
+            background-color: #ffffff;
+            color: #1e293b;
+            padding: 12px;
+        }
+        .dark select option {
+            background-color: #1e293b;
+            color: #f1f5f9;
+        }
+
+        /* Error state */
+        .question-error { 
+            border-right: 4px solid #ef4444 !important; 
+            background-color: rgba(254, 242, 242, 0.8) !important; 
+            animation: shake 0.4s; 
+        }
+        .dark .question-error { 
+            background-color: rgba(239, 68, 68, 0.1) !important; 
+            border-right-color: #f87171 !important; 
+        }
+        
+        @keyframes shake { 
+            0%, 100% { transform: translateX(0); } 
+            25% { transform: translateX(-5px); } 
+            50% { transform: translateX(5px); } 
+            75% { transform: translateX(-5px); } 
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        
+        /* Interactive Row */
+        .question-row {
+            transition: all 0.3s ease;
+        }
+        .question-row:focus-within {
+            transform: scale(1.01);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="pb-20 relative">
+
+    <!-- Animated Background -->
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 h-1.5 bg-slate-200/50 dark:bg-slate-800/50 backdrop-blur-sm">
+        <div id="progressBar" class="bg-gradient-to-r from-primary-500 to-accent-500 h-full transition-all duration-500 w-0 shadow-[0_0_10px_rgba(14,165,233,0.4)]"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="max-w-4xl mx-auto px-4 mt-12 mb-10 relative z-10">
+        <div class="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden border-t-[6px] border-t-primary-500">
+            <div class="relative z-10">
+                <div class="inline-block px-5 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm font-bold rounded-full mb-6 border border-primary-100 dark:border-primary-800/50 tracking-wide">
+                    رسالة الماجستير التنفيذي في الإدارة العامة
+                </div>
+                
+                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 dark:text-white leading-tight mb-4">
+                    دور القيادات الشابة في التحول الرقمي واستخدام الذكاء الاصطناعي المؤثر على التميز المؤسسي
+                </h1>
+                <p class="text-accent-600 dark:text-accent-400 font-bold text-lg md:text-xl mb-8">في الجهات الحكومية بدولة الإمارات العربية المتحدة</p>
+                
+                <div class="flex flex-col gap-4 pt-6 border-t border-slate-200 dark:border-slate-700/50">
+                    <!-- صف الباحثة (في الأعلى - بالمنتصف) -->
+                    <div class="flex justify-center w-full">
+                        <div class="inline-flex items-center justify-center gap-3 text-sm md:text-base font-medium bg-white/60 dark:bg-slate-800/60 px-6 py-3.5 rounded-xl border border-white/50 dark:border-slate-600 shadow-sm transition-transform hover:scale-105">
+                            <span class="text-primary-500 text-xl">👩‍🎓</span>
+                            <span class="text-slate-600 dark:text-slate-400">الباحثة:</span> 
+                            <strong class="text-slate-900 dark:text-white whitespace-nowrap">فاطمة مطر صالح الكعبي</strong>
+                        </div>
+                    </div>
+                    
+                    <!-- صف المشرفين (في الأسفل - يمين ويسار - متساوية الارتفاع) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center justify-center gap-3 text-sm md:text-base font-medium bg-white/50 dark:bg-slate-800/50 px-4 py-3.5 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm h-full transition-transform hover:scale-105">
+                            <span class="text-accent-500 text-lg">👨‍🏫</span>
+                            <span class="text-slate-600 dark:text-slate-400 whitespace-nowrap">إشراف:</span> 
+                            <strong class="text-slate-900 dark:text-white whitespace-nowrap">الدكتور بروفيسور / يوسف الغلاييني</strong>
+                        </div>
+                        <div class="flex items-center justify-center gap-3 text-sm md:text-base font-medium bg-white/50 dark:bg-slate-800/50 px-4 py-3.5 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm h-full transition-transform hover:scale-105">
+                            <span class="text-accent-500 text-lg">👨‍🏫</span>
+                            <span class="text-slate-600 dark:text-slate-400 whitespace-nowrap">إشراف:</span> 
+                            <strong class="text-slate-900 dark:text-white whitespace-nowrap">الدكتور / صالح الحموري</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme Toggle -->
+            <button id="themeToggle" class="absolute top-6 left-6 p-3 rounded-full bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 border border-slate-200 dark:border-slate-700 transition-all shadow-sm">
+                <svg id="moonIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <svg id="sunIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto px-4 relative z-10">
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden glass-panel rounded-3xl p-12 text-center mb-8 border-t-[6px] border-t-green-500">
+            <div class="w-24 h-24 bg-green-100 dark:bg-green-900/40 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-3xl font-extrabold text-slate-800 dark:text-white mb-4">تم الإرسال بنجاح</h2>
+            <p class="text-lg text-slate-600 dark:text-slate-300">نشكر لك مشاركتك القيمة التي تدعم أهداف هذا البحث العلمي.</p>
+        </div>
+
+        <form id="surveyForm" class="space-y-8">
+            
+            <!-- Introduction -->
+            <div class="glass-panel rounded-3xl p-8 border-r-[4px] border-r-primary-500">
+                <h3 class="text-xl font-bold text-primary-700 dark:text-primary-400 mb-4">مقدمة الاستبانة</h3>
+                <p class="text-base text-slate-700 dark:text-slate-300 leading-relaxed text-justify mb-4">
+                    ونظرًا للدور الحيوي الذي تؤديه القيادات الشابة في قيادة التغيير المؤسسي، وتعزيز الابتكار، وتبني التقنيات الحديثة، فإن مشاركتكم في هذا الاستبيان تُعد ذات أهمية كبيرة لإثراء نتائج الدراسة، والوصول إلى فهم أعمق لواقع التحول الرقمي واستخدام الذكاء الاصطناعي في بيئة العمل الحكومي.
+                </p>
+                <div class="bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 px-4 py-3 rounded-xl text-sm font-medium border border-blue-100 dark:border-blue-800/30">
+                    نؤكد أن هذا الاستبيان لا يتطلب إدخال أي بيانات شخصية، وسيتم تحليل البيانات بشكل جماعي لأغراض البحث العلمي فقط.
+                </div>
+            </div>
+
+            <!-- Demographics -->
+            <div class="glass-panel rounded-3xl p-8 border-r-[4px] border-r-accent-500">
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6 pb-3 border-b border-slate-200 dark:border-slate-700">ثانياً: البيانات الأولية</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2 question-row">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">1. الجنس <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="gender" class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none bg-white/80 dark:bg-slate-800/80 text-sm font-medium transition-colors" required>
+                                <option value="" disabled selected>اختر الجنس...</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="أنثى">أنثى</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-4 text-slate-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 question-row">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">2. الفئة العمرية <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="age" class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none bg-white/80 dark:bg-slate-800/80 text-sm font-medium transition-colors" required>
+                                <option value="" disabled selected>اختر الفئة العمرية...</option>
+                                <option value="أقل من 25 سنة">أقل من 25 سنة</option>
+                                <option value="من 25 – أقل من 30 سنة">من 25 – أقل من 30 سنة</option>
+                                <option value="من 30 – أقل من 35 سنة">من 30 – أقل من 35 سنة</option>
+                                <option value="أكثر من 35 سنة">أكثر من 35 سنة</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-4 text-slate-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 question-row">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">3. المؤهل العلمي <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="education" class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none bg-white/80 dark:bg-slate-800/80 text-sm font-medium transition-colors" required>
+                                <option value="" disabled selected>اختر المؤهل...</option>
+                                <option value="دبلوم">دبلوم</option>
+                                <option value="بكالوريوس">بكالوريوس</option>
+                                <option value="دراسات عليا">دراسات عليا</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-4 text-slate-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 question-row">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">4. سنوات الخبرة <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="experience" class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none bg-white/80 dark:bg-slate-800/80 text-sm font-medium transition-colors" required>
+                                <option value="" disabled selected>اختر سنوات الخبرة...</option>
+                                <option value="أقل من 5 سنوات">أقل من 5 سنوات</option>
+                                <option value="من 5 – أقل من 10 سنوات">من 5 – أقل من 10 سنوات</option>
+                                <option value="من 10 – أقل من 15 سنة">من 10 – أقل من 15 سنة</option>
+                                <option value="15 سنة فأكثر">15 سنة فأكثر</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-4 text-slate-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Questions Container -->
+            <div id="questions-container" class="space-y-8"></div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end pt-4 pb-8">
+                <button type="submit" id="submitBtn" class="w-full md:w-auto px-10 py-4 bg-primary-600 hover:bg-primary-700 text-white text-lg font-bold rounded-xl transition duration-300 shadow-lg flex items-center justify-center gap-2">
+                    <span>إرسال الاستبيان واعتماد الإجابات</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Data & Generation Logic -->
+    <script>
+        const surveyData = [
+            {
+                partTitle: "المحور الأول: دور القيادات الشابة",
+                subSections: [
+                    {
+                        title: "أولاً- تخطيط المسار الوظيفي:",
+                        questions: [
+                            "تعمل القيادات الشابة على مواءمة المسارات الوظيفية مع متطلبات التحول الرقمي في الجهات الحكومية.",
+                            "يتم إدماج مهارات الذكاء الاصطناعي ضمن خطط التطور الوظيفي للموظفين.",
+                            "تسهم القيادات الشابة في إعداد كوادر قادرة على التعامل مع التقنيات الرقمية المتقدمة.",
+                            "يعتمد تخطيط المسار الوظيفي على تطوير القدرات الرقمية بما يدعم الأداء المؤسسي.",
+                            "يركز المسار الوظيفي على إعداد قيادات مستقبلية قادرة على تحقيق التميز المؤسسي من خلال التكنولوجيا."
+                        ]
+                    },
+                    {
+                        title: "ثانياً- التمكين:",
+                        questions: [
+                            "تعزز القيادات الشابة تفويض الصلاحيات بما يدعم استخدام التقنيات الرقمية في العمل.",
+                            "تسهم القيادات الشابة في تهيئة بيئة عمل تشجع الابتكار وتبني الذكاء الاصطناعي.",
+                            "تدعم القيادات الشابة اتخاذ القرارات القائمة على البيانات والحلول الرقمية.",
+                            "توفر القيادات الشابة الموارد والدعم اللازم لتطبيق التقنيات الحديثة بكفاءة.",
+                            "يسهم تمكين الموظفين في تعزيز جاهزيتهم للتعامل مع متطلبات التحول الرقمي وتحقيق التميز المؤسسي."
+                        ]
+                    },
+                    {
+                        title: "ثالثاً- الجدارات الوظيفية:",
+                        questions: [
+                            "تمتلك القيادات الشابة كفاءات رقمية تسهم في دعم التحول الرقمي داخل الجهات الحكومية.",
+                            "يتم تطوير الجدارات الوظيفية بما يعزز القدرة على توظيف تقنيات الذكاء الاصطناعي في العمل.",
+                            "تسهم الجدارات التقنية لدى الموظفين في تحسين جودة الأداء المؤسسي وتحقيق التميز.",
+                            "تركز الجهات الحكومية على تنمية المهارات الرقمية بما يواكب متطلبات التحول الرقمي.",
+                            "تعزز الجدارات الوظيفية قدرة الموظفين على استخدام التقنيات الحديثة بكفاءة وفعالية."
+                        ]
+                    },
+                    {
+                        title: "رابعاً- تقييم الأداء:",
+                        questions: [
+                            "يتم تقييم أداء الموظفين في ضوء مستوى توظيفهم للتقنيات الرقمية في العمل.",
+                            "تعتمد معايير تقييم الأداء على مدى الإسهام في التحول الرقمي والابتكار المؤسسي.",
+                            "يسهم نظام تقييم الأداء في تحفيز استخدام تقنيات الذكاء الاصطناعي في بيئة العمل.",
+                            "يرتبط تقييم الأداء بقدرة الموظف على التكيف مع التقنيات الحديثة والتغيرات الرقمية.",
+                            "يدعم نظام تقييم الأداء تطوير الكفاءة الرقمية بما يسهم في تحقيق التميز المؤسسي."
+                        ]
+                    }
+                ]
+            },
+            {
+                partTitle: "المحور الثاني: التميز المؤسسي",
+                subSections: [
+                    {
+                        title: "أولاً- كفاءة الأداء:",
+                        questions: [
+                            "يساهم التحول الرقمي في تقليص الوقت اللازم لإنجاز المهام الحكومية.",
+                            "يسهم الذكاء الاصطناعي في تحسين دقة العمليات وتقليل الاعتماد على العمل اليدوي.",
+                            "تعزز الأنظمة الرقمية من انسيابية الإجراءات داخل المؤسسة.",
+                            "يدعم استخدام التقنيات الحديثة تحسين إدارة الموارد بشكل أكثر فاعلية.",
+                            "تسهم الحلول التقنية في رفع مستوى الإنتاجية داخل بيئة العمل."
+                        ]
+                    },
+                    {
+                        title: "ثانياً- فاعلية الأداء:",
+                        questions: [
+                            "يسهم التحول الرقمي في تعزيز قدرة المؤسسة على تحقيق أهدافها الاستراتيجية.",
+                            "يدعم الذكاء الاصطناعي اتخاذ قرارات إدارية أكثر دقة وفعالية.",
+                            "تسهم التقنيات الحديثة في تحسين مستوى رضا المستفيدين عن الخدمات الحكومية.",
+                            "يعزز التحول الرقمي من كفاءة تحقيق النتائج المؤسسية المخططة.",
+                            "يسهم استخدام الذكاء الاصطناعي في تحسين مخرجات العمل وجودتها."
+                        ]
+                    }
+                ]
+            },
+            {
+                partTitle: "المحور الثالث: التحول الرقمي والذكاء الاصطناعي",
+                subSections: [
+                    {
+                        title: "التحول الرقمي والذكاء الاصطناعي:",
+                        questions: [
+                            "تطبق الجهة الحكومية حلول التحول الرقمي في إدارة العمليات والإجراءات المؤسسية.",
+                            "يُسهم الذكاء الاصطناعي في تطوير مستوى الخدمات المقدمة للمستفيدين.",
+                            "تساعد الأنظمة الرقمية على تسهيل الإجراءات وتحسين كفاءة سير العمل.",
+                            "تتوافر بنية تقنية داعمة تمكّن من تبني التقنيات الرقمية المتقدمة.",
+                            "يُستخدم الذكاء الاصطناعي في تعزيز دقة وفاعلية عملية اتخاذ القرار."
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const scaleOptions = [
+            { text: "موافق بشدة", value: "5" },
+            { text: "موافق", value: "4" },
+            { text: "محايد", value: "3" },
+            { text: "غير موافق", value: "2" },
+            { text: "غير موافق بشدة", value: "1" }
+        ];
+
+        let globalQuestionNumber = 1;
+
+        function generateSurvey() {
+            const container = document.getElementById('questions-container');
+            let html = '';
+
+            surveyData.forEach((part) => {
+                html += `<div class="mb-8">
+                            <h2 class="text-2xl font-bold text-primary-700 dark:text-primary-400 mb-6 inline-block border-b-2 border-primary-200 dark:border-primary-800 pb-2">${part.partTitle}</h2>`;
+                
+                part.subSections.forEach((sub) => {
+                    html += `
+                        <div class="glass-panel rounded-3xl p-6 md:p-8 mb-6 border-r-[4px] border-r-slate-400 dark:border-r-slate-600">
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-6 bg-slate-100/50 dark:bg-slate-800/50 px-4 py-2 rounded-lg inline-block">${sub.title}</h3>
+                            <div class="space-y-6">
+                    `;
+
+                    sub.questions.forEach((q) => {
+                        html += `
+                            <div class="question-row bg-white/40 dark:bg-slate-800/40 p-4 rounded-xl border border-white/50 dark:border-slate-700/50" data-group="q${globalQuestionNumber}">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <p class="text-base font-medium text-slate-800 dark:text-slate-200 flex-1">
+                                        <span class="text-primary-600 dark:text-primary-400 font-bold mr-1">${globalQuestionNumber}.</span> 
+                                        ${q} <span class="text-red-500">*</span>
+                                    </p>
+                                    
+                                    <div class="relative w-full md:w-64 shrink-0">
+                                        <select name="q${globalQuestionNumber}" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white dark:bg-slate-800 text-sm font-medium transition-colors" required>
+                                            <option value="" disabled selected>اختر الإجابة...</option>
+                                            ${scaleOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-slate-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        globalQuestionNumber++;
+                    });
+                    html += `</div></div>`;
+                });
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        generateSurvey();
+
+        // Theme Toggle
+        const themeToggleBtn = document.getElementById('themeToggle');
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Auto-Scroll and Progress Logic
+        document.getElementById('surveyForm').addEventListener('change', (e) => {
+            const totalQuestions = 35 + 4; 
+            const answered = document.querySelectorAll('select:valid').length;
+            const progress = (answered / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            if(e.target.tagName === 'SELECT') {
+                setTimeout(() => {
+                    const currentGroup = e.target.closest('.question-row');
+                    if (!currentGroup) return;
+
+                    let nextGroup = currentGroup.nextElementSibling;
+                    
+                    if (!nextGroup) {
+                        let section = currentGroup.closest('.glass-panel');
+                        let nextSection = section.nextElementSibling;
+                        if (nextSection && nextSection.classList.contains('glass-panel')) {
+                            nextGroup = nextSection.querySelector('.question-row');
+                        }
+                    }
+
+                    if(nextGroup) {
+                        const offset = 100; 
+                        const bodyRect = document.body.getBoundingClientRect().top;
+                        const elementRect = nextGroup.getBoundingClientRect().top;
+                        const offsetPosition = (elementRect - bodyRect) - offset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 300); 
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+            let firstErrorEl = null;
+
+            const selects = document.querySelectorAll('select');
+            selects.forEach(sel => {
+                const group = sel.closest('.question-row');
+                if(!sel.value) {
+                    isValid = false;
+                    group.classList.add('question-error');
+                    if(!firstErrorEl) firstErrorEl = group;
+                } else {
+                    group.classList.remove('question-error');
+                }
+            });
+
+            if(!isValid && firstErrorEl) {
+                firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return isValid;
+        }
+
+        document.getElementById('surveyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!validateForm()) return;
+
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> جاري الإرسال...`;
+            btn.disabled = true;
+
+            try {
+                if(window.processFormSubmission) {
+                    await window.processFormSubmission(this);
+                } else {
+                    setTimeout(() => {
+                        document.getElementById('surveyForm').classList.add('hidden');
+                        document.getElementById('successMessage').classList.remove('hidden');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 1000);
+                }
+            } catch (err) {
+                alert("حدث خطأ في الإرسال. يرجى المحاولة مرة أخرى.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+
+    <!-- Supabase Integration Logic -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // مفاتيح الربط الخاصة بـ SUPABASE للمشروع الجديد للعميلة فاطمة الكعبي
+        const SUPABASE_URL = "https://panekqfcxdpzziibrqoh.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhbmVrcWZjeGRwenppaWJycW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MjgyMTUsImV4cCI6MjA5MzUwNDIxNX0.sacr47qbiiRHaSbFii_kt7tyzPNs4AK2Qeb08-k6-Dk";
+
+        window.processFormSubmission = async function(formElement) {
+            const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const formData = new FormData(formElement);
+            const data = Object.fromEntries(formData);
+            
+            for (let i = 1; i <= 35; i++) {
+                if (data[`q${i}`]) data[`q${i}`] = parseInt(data[`q${i}`]);
+            }
+            
+            const { error } = await supabase.from('survey_responses').insert([data]);
+
+            if (error) {
+                console.error("Supabase Error:", error);
+                throw new Error("خطأ في قاعدة البيانات");
+            }
+
+            document.getElementById('progressBar').style.width = `100%`;
+            formElement.classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+    </script>
+</body>
+</html>
